@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.controller;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.ResultPagingationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.service.error.InValidException;
 
@@ -30,6 +34,11 @@ public class UserController {
         user.setPassword(hashPassword);
         User res = this.userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @GetMapping("/users")
+    public ResultPagingationDTO getUsers(@Filter Specification<User> spec) {
+        return this.userService.getUsers(spec);
     }
 
     @GetMapping("/user/{id}")
