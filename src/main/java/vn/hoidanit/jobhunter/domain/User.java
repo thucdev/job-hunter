@@ -1,10 +1,13 @@
 package vn.hoidanit.jobhunter.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import vn.hoidanit.jobhunter.util.constant.Gender;
 
 @Entity
 @Table(name = "users")
@@ -13,11 +16,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    String name;
+    private String name;
 
-    String email;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-    String password;
+    private String email;
+    private String password;
 
     public long getId() {
         return id;
@@ -49,6 +54,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
 }

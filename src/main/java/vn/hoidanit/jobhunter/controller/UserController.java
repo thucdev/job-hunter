@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPagingationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.service.error.InValidException;
+import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 
 @RestController
 public class UserController {
@@ -37,19 +40,19 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResultPagingationDTO getUsers(@Filter Specification<User> spec) {
-        return this.userService.getUsers(spec);
+    @ApiMessage("Fetch all users")
+    public ResultPagingationDTO getUsers(@Filter Specification<User> spec, Pageable pageable) {
+        return this.userService.getUsers(spec,pageable);
     }
 
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable long id) throws InValidException {
-        // return this.userService.getUserById(id);
-        // User ResponseEntity.ok(this.userService.getUserById(id));
+    public ResponseEntity<ResUserDTO> getUser(@PathVariable long id) throws InValidException {
+
         User user = this.userService.getUserById(id);
         if (user == null) {
             throw new InValidException("null user");
         }
-        return user;
+        return ResponseEntity.ok().body(this.userService.convertTResUserDTO(user));
     }
 
     @PutMapping("/user/{id}")
